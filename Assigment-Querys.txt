@@ -1,0 +1,74 @@
+1) List all the columns of the Salespeople table.
+select * from salespeople;
+
+2) List all customers with a rating of 100.
+select * from customers where rating=100;
+
+3)Find the largest order taken by each salesperson on each date.
+select SNUM,count(*) AS LARGEST_ORDER_TAKEN from orders group by SNUM;
+
+4). Arrange the Order table by descending customer number.
+ select * from orders order by CNUM desc;
+
+5).Find which salespeople currently have orders in the order table. 
+ 
+ select sp.SNAME from orders AS od cross join salespeople AS sp  where od.SNUM = sp.SNUM group by od.SNUM  ;
+
+6). List names of all customers matched with the salespeople serving them. 
+
+ select sp.SNAME as salesPerson_Serving_to , cust.CNAME as customerName from salespeople As sp right join customers As cust on cust.SNUM = sp.SNUM ;
+
+7). Find the names and numbers of all salespeople who have more than one customer.
+ 
+
+select * from 
+(select sp.SNAME,count(*) AS countCustomer  from salespeople As sp right join customers As cust on sp.SNUM=cust.SNUM  group by cust.SNUM) As NoOfCustomersOfSalesPerson
+where countCustomer>1 ;
+
+8) Count the orders of each of the salespeople and output the results in descending order.
+
+ select sp.SNAME, count(*) As NoOfOrders from 
+ orders As od Left join salespeople As sp on od.SNUM = sp.SNUM  
+ group by od.SNUM order by NoOfOrders desc;
+
+9) List the customer table if and only if one or more of the customers in the Customer table are located in SanJose.
+
+select * from customers where city='sanjose';
+
+10) Match salespeople to customers according to what city they live in.
+
+select * from salespeople As sp  cross join customers As cust where sp.CITY=cust.CITY;
+
+11) Find all the customers in SanJose who have a rating above 200.
+
+select * from customers where city="sanjose" And rating > 200;
+
+
+12) List the names and commissions of all salespeople in London.
+
+ select SNAME as salespeople , COMM as commissions from salespeople where city='london';
+
+13) List all the orders of Salesperson Motika from the orders table.
+
+select * from orders where SNUM=(select SNUM from salespeople where SNAME='motika');
+
+14) Find all customers who booked orders on October 3.
+
+{% comment %} orders table sa oct 3 pa Cnum lauga then ushi ma group by karke unique Cnum, and then join and croos where cnum=custnum {% endcomment %}
+ select * from 
+-> customers cross join (select CNUM  from orders where ODATE='2019-08-02' group by CNUM) AS listCustomer
+-> Where listCustomer.CNUM=customers.CNUM;
+
+15) Give the sums of the amounts from the Orders table, grouped by date, eliminating all those dates where the SUM was not at least 2000 above
+the maximum Amount.
+
+2000> WALA HI CHAHIYA SIMPLI
+
+
+
+
+16) Select all orders that had amounts that were greater than at least one of the orders from October 6.
+17) Write a query that uses the EXISTS operator to extract all salespeople who have customers with a rating of 300.
+18) Find all customers whose cnum is 1000 above the snum of Serres.
+19) Give the salespeople’s commissions as percentages instead of decimal numbers.
+20) Find the largest order taken by each salesperson on each date, eliminating those Maximum orders, which are less than 3000.
