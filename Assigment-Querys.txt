@@ -63,16 +63,16 @@ select * from orders where SNUM=(select SNUM from salespeople where SNAME='motik
 15) Give the sums of the amounts from the Orders table, grouped by date, eliminating all those dates where the SUM was not at least 2000 above
 the maximum Amount.
 
-{% comment %} 2000> WALA HI CHAHIYA SIMPLIe {% endcomment %}
- SELECT ODATE,sum(AMT) from orders where AMT>2000 GROUP BY ODATE ;
+{% comment %} 2000> WALA HI CHAHIYA SIMPLIe as of now i think maxAmount is in gp of date /if not then i just make a sub Query to ge max amount Amt{% endcomment %}
+ SELECT ODATE,sum(AMT) from orders GROUP BY ODATE having sum(AMT)>max(Amt)+2000 ;
 
-
+ SELECT ODATE,sum(AMT) from orders GROUP BY ODATE having sum(AMT)>2000+(select max(AMT) from orders) ;
 
 16) Select all orders that had amounts that were greater than at least one of the orders from October 6.
 
 select * from orders where AMT >(select min(AMT) from orders where ODATE='2019-08-02' ) where ODATE<>'2019-08-02';
 
-select * from orders ,(select AMT from orders where ODATE='2019-08-02' ) AS data  where orders.AMT> data.AMT and orders.ODATE<>'2019-08-02' ;
+select * from orders cross join (select AMT from orders where ODATE='2019-08-02' ) AS data  where orders.AMT> data.AMT and orders.ODATE<>'2019-08-02' ;
 
 17) Write a query that uses the EXISTS operator to extract all salespeople who have customers with a rating of 300.
 
@@ -95,17 +95,46 @@ select sp.SNAME,od.AMT,od.ODate from salespeople as sp,orders AS od WHERE sp.SNU
 select sp.SNAME,max(od.AMT) As Largest_Order_Amount ,od.ODate from salespeople as sp,orders AS od WHERE sp.SNUM = od.SNUM AND ODATE ='2019-10-02' group by sp.SNUM;
 
 22) Find all customers located in cities where Serres has customers.
+//finding all customes which has same city as of serres customers have
 
 select * from customers AS cust right join (select city,SNUM As salesp CNAME from customers where SNUM=(select SNUM from salespeople where SNAME="serres" )) As AllCutomersCity as acc ON cust.city=acc.city AND cust.SNUM<>acc.salesp ;
  
 select cust.CName,cust.city from customers AS cust right join (select city,SNUM As salesp from customers where SNUM=(select SNUM from salespeople where SNAME="serres" )) As acc ON cust.city=acc.city AND cust.SNUM<>acc.salesp AND cust.CNUM is not NULL ;
 
 23) Select all customers with a rating above 200.
+
+Select * from customer where Rating >200
+
 24) Count the number of salespeople currently having orders in the orders table.
+
+select count(distinct Snum) as no_of_salespeople 
+from orders ;
+
+
 25) Write a query that produces all customers serviced by salespeople with a commission above 12%. Output the customer’s name,
 salesperson’s name and the salesperson’s rate of commission.
+
+
 26) Find salespeople who have multiple customers.
+ select sp.SNAME 
+ from salespeople as sp 
+ left join customers as cust on sp.SNUM=cust.SNUM
+ group by cust.SNUM
+ having count(cust.SNUM)>1;
+
 27) Find salespeople with customers located in their own cities.
+ select sp.SNAME,cust.CNAME,cust.CITY 
+ from salespeople as sp 
+ Inner join customers as cust on sp.CITY=cust.CITY 
+ order by cust.CITY; 
 28) Find all salespeople whose name starts with ‘P’ and fourth character is ‘I’.
+
+select * from salespeople where SNAME like 'p__i%'
+
 29) Write a query that uses a subquery to obtain all orders for the customer named ‘Cisneros’. Assume you do not know his customer number.
+
+select ord.* from orders as ord where CNUM =(select CNUM from customers where CNAME="Cisneros");
+
 30) Find the largest orders for Serres and Rifkin.
+
+select * from orders where AMT in (select max(AMT) from orders where SNUM in (select SNUM from salespeople where SNAME="Rifkin" or SNAME="Serres" ) group by SNUM)
