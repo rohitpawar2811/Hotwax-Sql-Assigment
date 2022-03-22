@@ -290,13 +290,30 @@ select COMM from salespeople where CITY='london'
 
 65) Write a query using ANY or ALL that will find all salespeople who have no customers located in their city.
 
+select sp.sname, sp.city, cust.cname, cust.city as cus_city from salespeople sp,customers cust where s.snum=c.snum and s.city!=c.city;
+
 66) Write a query using the EXISTS operator that selects all salespeople with customers located in their cities who are not assigned to them.
+
 67) Write a query that selects all customers serviced by Peel or Motika. (Hint: The snum field relates the 2 tables to one another.)
+
+select * from salespeople, customers where salespeople.SNUM = customers.SNUM and salespeople.SNAME in ('Peel', 'Motika');
+
 68) Count the number of salespeople registering orders for each day. (If a salesperson has more than one order on a given day, he or she should
 be counted only once.)
 69) Find all orders attributed to salespeople who live in London.
+
+select * from orders natural join salespeople where city = 'London';
+
 70) Find all orders by customers not located in the same cities as their salespeople.
+
+select ord.* from salespeople as sp 
+Inner join orders as ord on sp.SNUM=ord.SNUM
+Inner join customers as cust on cust.CNUM =ord.CNUM and cust.CITY<>sp.CITY ;
+
+select ONUM, CNAME, SNAME, customers.city, salespeople.city from customers, orders, salespeople where orders.CNUM = customers.cnum AND customers.SNUM = salespeople.SNUM and customers.CITY != salespeople.CITY;   
+
 71) Find all salespeople who have customers with more than one current order.
+
 72) Write a query that extracts from the customer’s table every customer assigned to a salesperson, who is currently having at least one another
 customer(besides the customer being selected) with orders in the Orders Table.
 73) Write a query on the customer’s table that will find the highest rating in each city. Put the output in this form: for the city (city), the highest
