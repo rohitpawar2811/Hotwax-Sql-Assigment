@@ -1341,3 +1341,5 @@ SELECT o.ONUM, s.SNUM, s.SNAME, sum(AMT) FROM Salespeople s, Orders o WHERE s.SN
 +------+---------+----------+------+
 | 1003 | AxelRod | New York |   10 |
 +------+---------+----------+------+
+
+done full Assigment....
